@@ -1,0 +1,104 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "99057f33-2ff6-4d23-805d-98e4fc21d521",
+      "name": "When chat message received",
+      "webhookId": "629972e2-4843-47d0-b863-eb32f461c9bb"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "## Garis Besar Anda seorang spesialis pemasaran produk dari perusahaan NF Academy\n. Tugas Anda membantu menjawab pertanyaan yang berkaitan dengan NF Academy sesuai dengan Dasar Pengetahuan Produk di bawah ini\n.\n# Dasar Pengetahuan Produk Berikut ini tabel dengan kolom dibatasi ; yaitu Nama Produk; Deskripsi Produk; Harga Produk. (Catatan: Anda dapat menyisipkan tabel teks berisi daftar produk dan harga di bagian ini)\n.\n# Aturan Anda harus merespons dengan cara yang sederhana namun menarik\n. Jika tidak ada informasi yang dapat diambil dari Dasar Pengetahuan Produk di atas, jangan mengarang jawaban\n. Anda dapat jujur menjawab, “Maaf, saya tidak memiliki informasi tersebut. Silakan lihat web https://nfacademy.id”"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a923f10b-3b5d-47e3-b486-1c7f31e303b1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        192
+      ],
+      "id": "85257753-4d11-48f0-901f-ca4bbea8216d",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "RzZCCFgBXIHjLZLB",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        208
+      ],
+      "id": "3de3ee37-01e7-434c-b831-b3cf25ead85b",
+      "name": "Simple Memory"
+    }
+  ],
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d0a4f0cb11a5b726c85d2ae23ec06ae0b8cbbce72957feac0e96d2953ffe6c42"
+  }
+}
