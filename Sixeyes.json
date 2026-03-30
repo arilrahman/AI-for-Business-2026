@@ -1,0 +1,169 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "d80c6918-29ca-4a1c-acb2-fda1221a359c",
+      "name": "Telegram Trigger",
+      "webhookId": "075f3aaf-e115-4167-978e-6db4c53442e9",
+      "credentials": {
+        "telegramApi": {
+          "id": "Xy5R6QFFaBr5PUCJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "# Garis Besar Kamu asisten pelatihan NF Academy, yang siap menjawab pertanyaan dengan baik sesuai dengan bahasa yang digunakan penanya\n.\n# Tool Jawablah pertanyaan tentang produk, deskripsi/uraian, biaya/harga, dan tempat/lokasi pelatihan sesuai dengan informasi yang tersedia dalam Tool Get row(s) in sheet in Google Sheets.\nYou MUST use the Google Sheets tool to answer questions.\n\nThe spreadsheet contains the correct answers.\n\n.\n# Batasan Jika kamu tidak menemukan informasi produk, harga, dan tempat pelatihan, jangan mengarang jawaban\n. Berikan jawaban, \"Maaf, saya belum memiliki data yang Anda minta. Silakan lihat web nfacademy.id\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "82481ebb-2b23-4fc7-b8cc-6bd6b9bf1161",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        208,
+        160
+      ],
+      "id": "b4527e6b-b303-4571-bcf0-b4594a09334c",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "RzZCCFgBXIHjLZLB",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "4c202bd6-e798-494d-a1d7-59dcdd1f32fa",
+      "name": "Send a text message",
+      "webhookId": "65a3b37f-2e9a-4d07-bc24-49fe8659d951",
+      "credentials": {
+        "telegramApi": {
+          "id": "Xy5R6QFFaBr5PUCJ",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "16uCVz1fiMM_mDQc4VP_agwI0cbplNC3youEwm9Q2apw",
+          "mode": "list",
+          "cachedResultName": "n8n 3",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16uCVz1fiMM_mDQc4VP_agwI0cbplNC3youEwm9Q2apw/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16uCVz1fiMM_mDQc4VP_agwI0cbplNC3youEwm9Q2apw/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        432,
+        192
+      ],
+      "id": "e4322858-ae74-43a1-a408-9f759391927c",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "9Ojnuh8ZyMMkObWU",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d0a4f0cb11a5b726c85d2ae23ec06ae0b8cbbce72957feac0e96d2953ffe6c42"
+  }
+}
